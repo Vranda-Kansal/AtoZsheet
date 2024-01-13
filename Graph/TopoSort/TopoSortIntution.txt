@@ -1,0 +1,18 @@
+Intuition
+
+- Basically toposort applicable when there is something related to order.
+- Means someone comes before/after that node.
+- so the Intuition lies so pick the nodes which have indegree as 0
+- when pick those whose indegree is 0 because they would always be on first in the order list they are independent of order
+- so the nodes which are reachable from these nodes there indegree would get reduce by 1 means they detach from that node
+- so indegree reduce by 1 if any one now become zero it would push back in the queue
+
+Important points:
+- whenever there is DAG or DG think about the toposort
+- in queue only elements which are not attach with cycle nodes are included
+- toposort would Never be call for cyclic nodes bcz there indegree would never be zero.
+- if any node reachable by cyclic graph then it would also be not included in toposort because its indegree would never be zero because its parent indegree
+cannot be zero so it is impossible to reachout to the children node.
+- but if the one whose indegree is zero can reach toh cyclic node as it is not dependent on the cyclic node.
+
+In directed Graph: bfs (O(V+ E))
