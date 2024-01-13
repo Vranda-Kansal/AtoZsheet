@@ -1,0 +1,93 @@
+LeetCode Link: https://leetcode.com/problems/number-of-provinces/description/
+
+Intuition
+Since the nodes connected directly or indirectly would be considered one and other which is completely detach from these would be consider other province.
+
+Approach
+In DFS or BFS if we start traversing from one node, the nodes which are directly or indirectly attach to them would be visited from the node we start traversing. So this is how we apply DFS or BFS here !
+
+Complexity
+Time complexity:
+DFS: O(N) + O(V+2E) (ignoring the adjList creation TC)
+BFS: O(N) + O(V+2E)
+
+Space complexity:
+O(N) + O(N) => (vis array + recursion stack space)
+
+Code
+<!-- DFS CODE -->
+class Solution {
+public:
+    void dfs(int node, vector<int> adj[], vector<int> &vis){
+        vis[node] = 1;
+
+        for(auto it: adj[node]){
+            if(!vis[it]){
+                dfs(it, adj, vis);
+            }
+        }
+    }
+    int findCircleNum(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        vector<int> adj[n];
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i!=j && grid[i][j] == 1){
+                    adj[i].push_back(j);
+                }
+            }
+        }
+
+        vector<int> vis(n, 0);
+        int cnt = 0;
+
+        for(int i=0; i<n; i++){
+            if(!vis[i]){
+                cnt++;
+                dfs(i, adj, vis);
+            }
+        }
+        return cnt;
+    }
+};
+<!-- BFS Code -->
+class Solution {
+public:
+    int findCircleNum(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<int> adj[n+1];
+
+        for(int j=0; j<n; j++){
+            for(int i=0; i<n; i++){
+                if(grid[j][i] == 1){
+                    adj[j+1].push_back(i+1);
+                    adj[i+1].push_back(j+1);
+                }
+            }
+        }
+
+        vector<int> vis(n+1);
+        int cnt = 0;
+        for(int i=1; i<=n; i++){
+            if(!vis[i]){
+                cnt++;
+                queue<int> q;
+                q.push(i);
+                while(!q.empty()){
+                    int node = q.front();
+                    q.pop();
+                    vis[node] = 1;
+                    for(auto it: adj[node]){
+                        if(!vis[it]){
+                            q.push(it);
+                            vis[it] = 1;
+                        }
+                    }
+                }
+            }
+        }
+        return cnt;
+    }
+};

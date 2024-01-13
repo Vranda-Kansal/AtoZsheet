@@ -1,0 +1,66 @@
+Leetcode link: https://leetcode.com/problems/rotting-oranges/solutions/
+
+Intuition
+Whenever there is a problem related to move 4-directional just think that you can apply graph there. In this question in 1 sec all rotten oranges would rotten adjacent fresh oranges.
+
+Approach
+So we start initial traversal from all rotten oranges. since from all rotten oranges so we can store all inital rotten oranges in the queue.
+Initially the time would be 0 associated with initial rotten oranges.
+as we move one step from these rotten oranges the time increase with 1. for all rotten oranges and new ones who now got rotten would get pushed into queue.
+How would be know no fresh oranges left?
+So initally we would take fresh_orange_count after the whole traversal if fresh_orange_count != 0 means the stored time is the answer otherwise -1 (its not possible).
+Whenever we have to traverse from many point always try to apply BFS.
+Complexity
+Time complexity: O(n*n) * 4 (for checking all 4 directions)
+Space complexity: O(n*n) (for queue)
+Code
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int fresh_orange_count = 0;
+        queue<pair<int, int>> q;
+        
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1) fresh_orange_count++;
+                if(grid[i][j] == 2){
+                    q.push({i, j});
+                }
+            }
+        }
+        <!-- [[0]] in this case -->
+        if(fresh_orange_count == 0) return 0;
+
+        int DR[] = {-1, 0, 1, 0};
+        int DC[] = {0, 1, 0, -1};
+        <!-- because inside the q time++ so initally the time should be 0 -->
+        int time = -1;
+        while(!q.empty()){
+            int siz = q.size();
+            time++;
+            for(int i=0; i<siz; i++){
+                auto node = q.front();
+                q.pop();
+                int row = node.first;
+                int col = node.second;
+                for(int k=0; k<4; k++){
+                    int newRow = row + DR[k];
+                    int newCol = col + DC[k];
+
+                    if(newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && grid[newRow][newCol] == 1){
+                        fresh_orange_count--;
+                        q.push({newRow, newCol});
+                        <!-- make it 2 so that next time we would not vis it again -->
+                        grid[newRow][newCol] = 2;
+                    }
+                }
+            }
+        }
+        <!-- still fresh_orange_count left just return -1 -->
+        if(fresh_orange_count > 0) return -1;
+        return time;
+    }
+};

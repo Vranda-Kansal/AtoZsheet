@@ -1,0 +1,77 @@
+For self notes..
+
+Intuition
+we can try DFS or BFS both, again 4-direction so may be Graph question.
+Now all the 'O' which are on the boundary would never be change into 'X' and all other zeros with are connected to these boundary 'O' would also cannot be changed into 'X'. So we try traversal from all th boundary zeros and make them visited in the visited array.
+After that all the ones which are not visited and 'O' would be changed to 'X'.
+
+Approach
+Complexity
+Time complexity:
+o(N) + O(M) + O(N X M) + O(N X M)
+
+Space complexity:
+O(N X M) + O(N X M)
+
+Code
+class Solution {
+public:
+    void solve(vector<vector<char>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+
+        vector<vector<int>> vis(m, vector<int>(n, 0));
+        queue<pair<int, int>> q;
+        
+            for(int j=0; j<n; j++){
+                    if(grid[0][j] == 'O'){
+                        q.push({0, j});
+                        vis[0][j] = 1;
+                    }
+                    if(grid[m-1][j] == 'O'){
+                        q.push({m-1, j});
+                        vis[m-1][j] = 1;
+                    }
+            }
+
+            for(int i=0; i<m; i++){
+                    if(grid[i][0] == 'O'){
+                        q.push({i, 0});
+                        vis[i][0] = 1;
+                    }
+                    if(grid[i][n-1] == 'O'){
+                        q.push({i, n-1});
+                        vis[i][n-1] =1;
+                    }
+            }
+
+        int DR[] = {-1, 0, 1, 0};
+        int DC[] = {0, 1, 0, -1};
+
+        while(!q.empty()){
+            auto node = q.front();
+            q.pop();
+            int row = node.first;
+            int col = node.second;
+
+            for(int k=0; k<4; k++){
+                int newRow = row + DR[k];
+                int newCol = col + DC[k];
+
+                if(newRow >=0 && newRow <m && newCol >=0 && newCol <n && grid[newRow][newCol] == 'O' && !vis[newRow][newCol]){
+                    // grid[newRow][newCol] = -1;
+                    q.push({newRow, newCol});
+                    vis[newRow][newCol] = 1;
+                }
+            }
+        }
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(vis[i][j] == 0 && grid[i][j] == 'O'){
+                    grid[i][j] = 'X';
+                }
+            }
+        }
+    }
+};
