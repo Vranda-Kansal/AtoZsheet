@@ -1,0 +1,51 @@
+Intuition
+This Question is really really great. Learnt a lot of concept via this question.
+
+First Directed Edge so think about topoSort.
+Here the nodes that are part of the cycle can never be the safe nodes.
+Also the nodes which have 0 outgoing edge are the safe nodes.
+So We start our approach from the these nodes who have 0 outgoing edge.
+then start removing them from the graph
+the nodes which are attached from the removing node now there outdegree get reduce by 1.
+if any node now become the whose outdegree become zero means ok it is also safe node.
+The nodes which are in cycle would never have outdegree as nodes. since they are attached with someone all time.
+That How TopoSort comes into picture.
+
+
+Code
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n  = graph.size();
+        vector<int> tmp[n];
+        vector<int> outdegree(n, 0);
+        queue<int> q;
+        vector<int> safe(n, 0);
+        vector<int> ans;
+
+        for(int i=0; i<n; i++){
+            for(auto it: graph[i]){
+                tmp[it].push_back(i);
+            }
+            outdegree[i] = graph[i].size();
+            if(outdegree[i] == 0){
+                q.push(i);
+            }
+        }
+        while(!q.empty()){
+            int node = q.front();
+            safe[node] = 1;
+            q.pop();
+            for(auto it: tmp[node]){
+                outdegree[it]--;
+                if(outdegree[it] == 0){
+                    q.push(it);
+                }
+            }
+        }
+        for(int i=0; i< n; i++){
+            if(safe[i]) ans.push_back(i);
+        }
+        return ans;
+    }
+};
